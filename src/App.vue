@@ -11,7 +11,7 @@
     </div>
 
     <!-- 报告页 -->
-    <div v-if="currentPage === 'report'" id="reportPage" class="animate__animated animate__fadeIn px-4 py-8">
+    <div v-if="currentPage === 'report'" id="reportPage" class="animate__animated animate__fadeIn px-2 md:px-4 py-4 md:py-8">
       <ReportPage 
         :user-data="userData" 
         :ai-content="aiContent"
@@ -36,9 +36,8 @@ const userData = ref<Partial<UserData>>({})
 const aiContent = ref('')
 const isLoading = ref(false)
 
-// AI 接口配置
-const API_URL = 'https://liuziting.dpdns.org/?target=https://api.xiaomimimo.com/v1/chat/completions'
-const API_KEY = 'Bearer sk-c6to94t7q8zvd2f3f9rdrzsegb7dj37lg3du6e0rapwkmp5b'
+// 使用 Cloudflare Workers 代理（不需要 API_KEY 了）
+const WORKERS_URL = 'https://icy-sunset-a2a6.liu11onepoint.workers.dev/'
 
 // 开始分析
 const startAnalysis = async (username: string) => {
@@ -146,10 +145,14 @@ const callMimoAI = async (data: { login: string; stars: number; lang: string; to
   要求包含：1. 他的技术性格倾向。2. 2026年他最可能掉进的坑。3. 一个让他破防的梗。
   回复内容直接展示，不需要标题。`
 
+  
   try {
-    const response = await fetch(API_URL, {
+    // 使用 Workers 代理
+    const response = await fetch(WORKERS_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: API_KEY },
+      headers: { 
+        'Content-Type': 'application/json' 
+      },
       body: JSON.stringify({
         model: 'mimo-v2-flash',
         messages: [{ role: 'user', content: prompt }],
@@ -159,6 +162,7 @@ const callMimoAI = async (data: { login: string; stars: number; lang: string; to
     const resData = await response.json()
     return resData.choices[0].message.content
   } catch (e) {
+    console.error('AI调用失败:', e)
     return "AI 脑机连接异常，但在代码维度里，你已经是不可忽视的奇点。"
   }
 }
@@ -189,19 +193,34 @@ const downloadPoster = () => {
   const captureArea = document.getElementById('captureArea')
   if (!captureArea) return
 
+  // 临时显示更好的背景效果
+  const originalStyle = captureArea.style.cssText
+  captureArea.style.background = 'linear-gradient(135deg, #030712 0%, #0f172a 50%, #030712 100%)'
+  
   html2canvas(captureArea, {
     backgroundColor: "#030712",
-    useCORS: true,
+    useCORS: false,
+    allowTaint: true,
     scale: 2,
     scrollX: 0,
     scrollY: 0,
     width: captureArea.offsetWidth,
-    height: captureArea.offsetHeight
+    height: captureArea.offsetHeight,
+    logging: false,
+    imageTimeout: 0
   }).then((canvas: HTMLCanvasElement) => {
+    // 恢复原始样式
+    captureArea.style.cssText = originalStyle
+    
     const link = document.createElement('a')
-    link.download = `GitHub-Trace-2025.png`
-    link.href = canvas.toDataURL()
+    link.download = `GitHub-Trace-2025-${userData.value.login || 'user'}.png`
+    link.href = canvas.toDataURL('image/png', 1.0)
     link.click()
+  }).catch((error) => {
+    // 恢复原始样式
+    captureArea.style.cssText = originalStyle
+    console.error('截图失败:', error)
+    alert('海报生成失败，请重试')
   })
 }
 

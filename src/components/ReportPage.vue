@@ -1,11 +1,18 @@
 <template>
-  <div class="max-w-4xl mx-auto flex justify-between items-center mb-6">
+  <div class="max-w-4xl mx-auto flex justify-between items-center mb-4 md:mb-6 px-2 md:px-0">
     <button @click="$emit('backToHome')" class="text-gray-500 text-sm hover:text-white">← 返回</button>
-    <button @click="$emit('downloadPoster')" class="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-2 rounded-full text-xs font-bold shadow-lg">下载海报</button>
+    <button @click="$emit('downloadPoster')" class="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 md:px-6 py-2 rounded-full text-xs font-bold shadow-lg">下载海报</button>
   </div>
 
   <!-- 截图区域 -->
   <div id="captureArea" class="max-w-4xl mx-auto glass p-6 md:p-10 relative overflow-hidden">
+    <!-- 截图专用背景 -->
+    <div class="absolute inset-0 opacity-30 pointer-events-none">
+      <div class="w-full h-full" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px;"></div>
+    </div>
+    
+    <!-- 内容区域 -->
+    <div class="relative z-10">
     <!-- 头部 -->
     <div class="flex flex-col md:flex-row items-center md:items-start gap-6 mb-10 text-center md:text-left">
       <img 
@@ -137,17 +144,17 @@
       </div>
 
       <!-- AI锐评区域 -->
-      <div class="glass p-8 border-l-4 border-l-red-500">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="text-2xl">🔥</span>
+      <div class="glass p-4 md:p-8 border-l-4 border-l-red-500">
+        <div class="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+          <span class="text-xl md:text-2xl">🔥</span>
           <div>
-            <h3 class="text-xl font-black text-red-400 uppercase tracking-wider">锐评</h3>
-            <p class="text-[10px] text-red-400/70 font-bold uppercase tracking-[0.2em]">Mimo-v2 AI 毒舌点评</p>
+            <h3 class="text-lg md:text-xl font-black text-red-400 uppercase tracking-wider">锐评</h3>
+            <p class="text-[9px] md:text-[10px] text-red-400/70 font-bold uppercase tracking-[0.2em]">Mimo-v2 AI 毒舌点评</p>
           </div>
           <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse ml-auto"></span>
         </div>
         
-        <div class="text-base md:text-lg leading-relaxed text-gray-200 min-h-[150px] bg-slate-900/30 rounded-2xl p-6 border border-red-500/20">
+        <div class="text-sm md:text-base lg:text-lg leading-relaxed text-gray-200 min-h-[120px] md:min-h-[150px] bg-slate-900/30 rounded-2xl p-3 md:p-6 border border-red-500/20">
           <div class="italic">
             {{ aiContent || 'AI 正在深度扫描您的代码灵魂，准备犀利点评中...' }}
           </div>
@@ -176,10 +183,11 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <div class="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center opacity-30 gap-4">
-      <p class="text-[8px] font-mono tracking-widest uppercase">Power by Xiaomi Mimo-v2 & GitHub Trace Engine</p>
-      <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" class="w-4 h-4 invert" alt="GitHub">
+      <!-- Footer -->
+      <div class="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center opacity-30 gap-4">
+        <p class="text-[8px] font-mono tracking-widest uppercase">Power by Xiaomi Mimo-v2 & GitHub Trace Engine</p>
+        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" class="w-4 h-4 invert" alt="GitHub">
+      </div>
     </div>
   </div>
 </template>
