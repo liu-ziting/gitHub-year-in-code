@@ -17,7 +17,7 @@
       </h1>
       <p class="text-gray-400 text-xs md:text-base max-w-xl mx-auto font-medium leading-relaxed opacity-60">
         深度解析你的 GitHub 每一行 Commit <br class="hidden md:block">
-        接入 <span class="text-white font-bold">Mimo AI</span> 视觉引擎，生成专属开发者数字名片
+        接入 <span class="text-white font-bold">Mimo AI</span> 大模型，生成专属开发者数字名片
       </p>
     </div>
 
@@ -56,51 +56,66 @@
 
     <!-- 功能特性展示 - 重新设计的卡片 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full text-left">
-      <!-- 基因测序 -->
-      <div class="group relative glass p-8 border border-white/5 hover:border-teal-500/30 transition-all duration-500">
+      <!-- 技术基因 -->
+      <div class="group relative glass p-8 border border-white/5 hover:border-indigo-500/30 transition-all duration-500">
         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
           <span class="text-4xl font-black">01</span>
         </div>
-        <div class="w-10 h-10 bg-teal-500/10 rounded-xl flex items-center justify-center mb-6 border border-teal-500/20">
+        <div class="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-6 border border-indigo-500/20">
           <span class="text-xl">🧬</span>
         </div>
-        <h3 class="text-white font-black text-lg mb-3 tracking-tight">基因测序</h3>
+        <h3 class="text-white font-black text-lg mb-3 tracking-tight">技术基因</h3>
         <p class="text-sm text-gray-500 leading-relaxed">
-          统计多达 100+ 仓库的语言构成，<br>
-          精准识别你的技术栈倾向与底层基因。
+          深度解码你的技术序列，分析核心语言栈与工程能力，<br>
+          预测 2026 年你将深耕的赛博领地。
         </p>
       </div>
 
-      <!-- 灵魂对谈 -->
-      <div class="group relative glass p-8 border border-white/5 hover:border-purple-500/30 transition-all duration-500">
+      <!-- 灵魂暴击 -->
+      <div class="group relative glass p-8 border border-white/5 hover:border-red-500/30 transition-all duration-500">
         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
           <span class="text-4xl font-black">02</span>
         </div>
-        <div class="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6 border border-purple-500/20">
-          <span class="text-xl">🧠</span>
+        <div class="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center mb-6 border border-red-500/20">
+          <span class="text-xl">💀</span>
         </div>
-        <h3 class="text-white font-black text-lg mb-3 tracking-tight">灵魂对谈</h3>
+        <h3 class="text-white font-black text-lg mb-3 tracking-tight">灵魂暴击</h3>
         <p class="text-sm text-gray-500 leading-relaxed">
-          Mimo AI 深度阅读你的代码灵魂，<br>
-          生成犀利且独特的赛博锐评。
+          接入 Mimo AI 毒舌引擎，精准捕捉你的代码槽点，<br>
+          生成让你无法反驳的赛博灵魂拷问。
         </p>
       </div>
 
-      <!-- 视觉导出 -->
-      <div class="group relative glass p-8 border border-white/5 hover:border-pink-500/30 transition-all duration-500">
+      <!-- 赛博标签 -->
+      <div class="group relative glass p-8 border border-white/5 hover:border-teal-500/30 transition-all duration-500">
         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
           <span class="text-4xl font-black">03</span>
         </div>
-        <div class="w-10 h-10 bg-pink-500/10 rounded-xl flex items-center justify-center mb-6 border border-pink-500/20">
-          <span class="text-xl">🖼️</span>
+        <div class="w-10 h-10 bg-teal-500/10 rounded-xl flex items-center justify-center mb-6 border border-teal-500/20">
+          <span class="text-xl">🏷️</span>
         </div>
-        <h3 class="text-white font-black text-lg mb-3 tracking-tight">视觉导出</h3>
+        <h3 class="text-white font-black text-lg mb-3 tracking-tight">年度热词</h3>
         <p class="text-sm text-gray-500 leading-relaxed">
-          生成适配全平台的数字名片，<br>
-          内置热力图映射与高保真海报导出。
+          基于全量仓库数据建模，提取极具幽默感的身份标签，<br>
+          一键生成高保真数字名片与社交海报。
         </p>
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="mt-24 pb-12 w-full border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center opacity-40 gap-4">
+      <div class="flex flex-col items-center md:items-start gap-1">
+        <p class="text-[10px] font-mono tracking-widest uppercase">© 2025 GitHub Trace Soul Analysis</p>
+        <a href="https://github.com/liu-ziting/" target="_blank" class="text-[10px] font-mono tracking-widest uppercase hover:text-white transition-colors border-b border-transparent hover:border-white/40">
+          Created by liu-ziting
+        </a>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/liu-ziting/" target="_blank" class="hover:opacity-100 transition-opacity">
+          <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" crossorigin="anonymous" class="w-5 h-5 invert" alt="GitHub">
+        </a>
+      </div>
+    </footer>
   </div>
 </template>
 
