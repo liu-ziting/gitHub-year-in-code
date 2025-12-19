@@ -189,7 +189,7 @@ const startAnalysis = async (username: string) => {
       })
     ])
 
-    const tags = tagsStr.replace(/[\[\]"]/g, '').split(/[,，\s]+/).filter(t => t.trim()).slice(0, 10)
+    const tags = tagsStr.replace(/[\[\]"]/g, '').split(/[,，\s]+/).filter((t: string) => t.trim()).slice(0, 10)
 
     // 打字机效果
     typeWriter(analysis, critique, tags)
