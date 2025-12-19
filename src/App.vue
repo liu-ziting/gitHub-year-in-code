@@ -33,7 +33,7 @@ import type { UserData, GitHubUser, GitHubRepo } from './types'
 // 响应式数据
 const currentPage = ref<'landing' | 'report'>('landing')
 const userData = ref<Partial<UserData>>({})
-const aiContent = ref('')
+const aiContent = ref<{personality: string, prediction: string, tags: string[]}>({personality: '', prediction: '', tags: []})
 const isLoading = ref(false)
 
 // 使用 Cloudflare Workers 代理（不需要 API_KEY 了）
@@ -72,7 +72,7 @@ const startAnalysis = async (username: string) => {
     const totalStars = repos.reduce((s, r) => s + r.stargazers_count, 0)
     const langMap: Record<string, number> = {}
     repos.forEach(r => r.language && (langMap[r.language] = (langMap[r.language] || 0) + 1))
-    const topLang = Object.keys(langMap).sort((a,b) => langMap[b] - langMap[a])[0] || 'Unknown'
+    const topLang = Object.keys(langMap).sort((a,b) => (langMap[b] || 0) - (langMap[a] || 0))[0] || 'Unknown'
     const starRepo = repos.sort((a,b) => b.stargazers_count - a.stargazers_count)[0] || null
 
     // 计算额外统计数据
@@ -141,10 +141,21 @@ const startAnalysis = async (username: string) => {
 // 调用AI接口
 const callMimoAI = async (data: { login: string; stars: number; lang: string; topRepo: string }) => {
   const prompt = `你是 GitHub 灵魂分析官。基于数据：用户名${data.login}, Star总计${data.stars}, 主修语言${data.lang}, 代表作${data.topRepo}。
-  请生成一份毒舌但专业的个人代码风格画像（约150字）。
-  要求包含：1. 他的技术性格倾向。2. 2026年他最可能掉进的坑。3. 一个让他破防的梗。
-  回复内容直接展示，不需要标题。`
-
+  请生成一份毒舌但专业的个人代码风格画像。
+  
+  请严格按照以下JSON格式返回，不要添加任何其他内容：
+  {
+    "personality": "技术性格倾向分析，支持**加粗**和换行",
+    "prediction": "2026年最可能掉进的坑，支持**加粗**和换行", 
+    "tags": ["标签1", "标签2", "标签3"]
+  }
+  
+  要求：
+  1. personality字段：分析他的技术性格倾向，要毒舌但专业，约80字，可以使用**文字**加粗重点
+  2. prediction字段：预测2026年他最可能掉进的坑，包含一个让他破防的梗，约70字，可以使用**文字**加粗
+  3. tags字段：根据分析总结3-8个标签，体现技术特点和性格，如["完美主义者","框架收集癖","深夜码农"]
+  4. 语言要犀利有趣，但保持专业水准
+  5. 必须返回有效的JSON格式`
   
   try {
     // 使用 Workers 代理
@@ -154,29 +165,58 @@ const callMimoAI = async (data: { login: string; stars: number; lang: string; to
         'Content-Type': 'application/json' 
       },
       body: JSON.stringify({
-        model: 'mimo-v2-flash',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.8
       })
     })
     const resData = await response.json()
-    return resData.choices[0].message.content
+    const content = resData.choices[0].message.content
+    
+    try {
+      // 尝试解析JSON
+      const aiAnalysis = JSON.parse(content)
+      return aiAnalysis
+    } catch (parseError) {
+      // 如果解析失败，返回默认格式
+      return {
+        personality: content.substring(0, 100) + "...",
+        prediction: "2026年最可能在AI大潮中迷失方向，成为那个还在**手写CSS**的古典程序员。",
+        tags: ["神秘开发者", "代码隐士", "技术探索者"]
+      }
+    }
   } catch (e) {
     console.error('AI调用失败:', e)
-    return "AI 脑机连接异常，但在代码维度里，你已经是不可忽视的奇点。"
+    return {
+      personality: "AI 脑机连接异常，但在代码维度里，你已经是**不可忽视的奇点**。",
+      prediction: "2026年最可能掉进的坑就是过度依赖AI，忘记了**编程的本质乐趣**。",
+      tags: ["AI依赖症", "代码哲学家", "数字游民"]
+    }
   }
 }
 
 // 打字机效果
-const typeWriter = (text: string) => {
-  aiContent.value = ''
+const typeWriter = (aiAnalysis: {personality: string, prediction: string, tags: string[]}) => {
+  aiContent.value = {personality: '', prediction: '', tags: aiAnalysis.tags || []}
+  
+  // 先打personality
   let i = 0
-  const timer = setInterval(() => {
-    if (i < text.length) {
-      aiContent.value += text.charAt(i)
+  const personalityTimer = setInterval(() => {
+    if (i < aiAnalysis.personality.length) {
+      aiContent.value.personality += aiAnalysis.personality.charAt(i)
       i++
     } else {
-      clearInterval(timer)
+      clearInterval(personalityTimer)
+      
+      // 然后打prediction
+      let j = 0
+      const predictionTimer = setInterval(() => {
+        if (j < aiAnalysis.prediction.length) {
+          aiContent.value.prediction += aiAnalysis.prediction.charAt(j)
+          j++
+        } else {
+          clearInterval(predictionTimer)
+        }
+      }, 30)
     }
   }, 30)
 }
@@ -185,43 +225,123 @@ const typeWriter = (text: string) => {
 const backToHome = () => {
   currentPage.value = 'landing'
   userData.value = {}
-  aiContent.value = ''
+  aiContent.value = {personality: '', prediction: '', tags: []}
 }
 
 // 下载海报
-const downloadPoster = () => {
+const downloadPoster = async () => {
   const captureArea = document.getElementById('captureArea')
   if (!captureArea) return
 
-  // 临时显示更好的背景效果
-  const originalStyle = captureArea.style.cssText
-  captureArea.style.background = 'linear-gradient(135deg, #030712 0%, #0f172a 50%, #030712 100%)'
-  
-  html2canvas(captureArea, {
-    backgroundColor: "#030712",
-    useCORS: false,
-    allowTaint: true,
-    scale: 2,
-    scrollX: 0,
-    scrollY: 0,
-    width: captureArea.offsetWidth,
-    height: captureArea.offsetHeight,
-    logging: false,
-    imageTimeout: 0
-  }).then((canvas: HTMLCanvasElement) => {
+  try {
+    // 临时显示更好的背景效果
+    const originalStyle = captureArea.style.cssText
+    captureArea.style.background = 'linear-gradient(135deg, #030712 0%, #0f172a 50%, #030712 100%)'
+    
+    // 预处理图片，确保它们不会污染canvas
+    const images = captureArea.querySelectorAll('img')
+    const imagePromises = Array.from(images).map(async (img) => {
+      if (img.src.startsWith('http') && !img.src.includes(window.location.origin)) {
+        try {
+          // 创建一个新的图片元素
+          const newImg = new Image()
+          newImg.crossOrigin = 'anonymous'
+          
+          return new Promise((resolve, reject) => {
+            newImg.onload = () => {
+              // 创建canvas来转换图片
+              const canvas = document.createElement('canvas')
+              const ctx = canvas.getContext('2d')
+              canvas.width = newImg.width
+              canvas.height = newImg.height
+              ctx?.drawImage(newImg, 0, 0)
+              
+              try {
+                const dataURL = canvas.toDataURL('image/png')
+                img.src = dataURL
+                resolve(dataURL)
+              } catch (e) {
+                // 如果还是失败，就隐藏这个图片
+                img.style.display = 'none'
+                resolve(null)
+              }
+            }
+            newImg.onerror = () => {
+              img.style.display = 'none'
+              resolve(null)
+            }
+            newImg.src = img.src
+          })
+        } catch (e) {
+          img.style.display = 'none'
+          return null
+        }
+      }
+      return Promise.resolve(null)
+    })
+
+    await Promise.all(imagePromises)
+    
+    // 等待一下让图片加载完成
+    await new Promise(resolve => setTimeout(resolve, 500))
+    
+    const canvas = await html2canvas(captureArea, {
+      backgroundColor: "#030712",
+      useCORS: true,
+      allowTaint: false,
+      scale: 2,
+      scrollX: 0,
+      scrollY: 0,
+      width: captureArea.offsetWidth,
+      height: captureArea.offsetHeight,
+      logging: false,
+      imageTimeout: 0,
+      onclone: (clonedDoc) => {
+        // 在克隆的文档中处理图片
+        const clonedImages = clonedDoc.querySelectorAll('img')
+        clonedImages.forEach(img => {
+          if (img.src.startsWith('http') && !img.src.includes(window.location.origin)) {
+            img.style.display = 'none'
+          }
+        })
+      }
+    })
+    
     // 恢复原始样式
     captureArea.style.cssText = originalStyle
+    images.forEach(img => {
+      img.style.display = ''
+    })
     
     const link = document.createElement('a')
     link.download = `GitHub-Trace-2025-${userData.value.login || 'user'}.png`
     link.href = canvas.toDataURL('image/png', 1.0)
     link.click()
-  }).catch((error) => {
-    // 恢复原始样式
-    captureArea.style.cssText = originalStyle
+    
+  } catch (error) {
     console.error('截图失败:', error)
-    alert('海报生成失败，请重试')
-  })
+    
+    // 如果还是失败，尝试简化版本
+    try {
+      const canvas = await html2canvas(captureArea, {
+        backgroundColor: "#030712",
+        useCORS: false,
+        allowTaint: true,
+        scale: 1,
+        ignoreElements: (element) => {
+          return element.tagName === 'IMG' && (element as HTMLImageElement).src.startsWith('http') && !(element as HTMLImageElement).src.includes(window.location.origin)
+        }
+      })
+      
+      const link = document.createElement('a')
+      link.download = `GitHub-Trace-2025-${userData.value.login || 'user'}.png`
+      link.href = canvas.toDataURL('image/png', 1.0)
+      link.click()
+    } catch (fallbackError) {
+      console.error('备用截图也失败:', fallbackError)
+      alert('海报生成失败，可能是由于网络图片跨域问题。请稍后重试或联系开发者。')
+    }
+  }
 }
 
 // 加载外部CSS

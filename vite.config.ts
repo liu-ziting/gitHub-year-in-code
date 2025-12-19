@@ -16,8 +16,8 @@ export default defineConfig({
         target: 'https://ghchart.rshah.org',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/ghchart/, ''),
-        configure: (proxy, options) => {
-          proxy.on('proxyReq', (proxyReq, req, res) => {
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
             proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
           })
         }
