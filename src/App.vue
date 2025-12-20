@@ -8,6 +8,7 @@
     <!-- 首页 -->
     <div v-if="currentPage === 'landing'" id="landingPage" class="min-h-screen flex flex-col items-center px-4 py-12 md:py-24">
       <LandingPage 
+        :is-loading="isLoading"
         @start-analysis="startAnalysis" 
         @show-error="(msg) => showToast(msg, 'error')"
       />
