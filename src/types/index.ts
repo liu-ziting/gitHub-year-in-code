@@ -22,7 +22,7 @@ export interface UserData extends GitHubUser {
   totalStars: number
   topLang: string
   rank: string
-  universalRank: string
+  techImpact: string
   powerLevel: string
   totalContributions: number
   totalCommits: number

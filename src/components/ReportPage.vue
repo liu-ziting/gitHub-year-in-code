@@ -112,13 +112,13 @@
           <div class="text-2xl font-black text-blue-400">{{ userData.topLang || 'Vue' }}</div>
         </div>
 
-        <!-- Universal Rank -->
+        <!-- GitHub Seniority -->
         <div class="glass p-4 bg-gradient-to-br from-orange-900/20 to-transparent">
           <div class="flex items-center gap-2 mb-2">
-            <span class="text-orange-400">👑</span>
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Universal Rank</p>
+            <span class="text-orange-400">⏳</span>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">GitHub Seniority</p>
           </div>
-          <div class="text-2xl font-black text-orange-400">{{ userData.universalRank || 'Top 5%' }}</div>
+          <div class="text-2xl font-black text-orange-400">{{ userData.techImpact || '0 days' }}</div>
         </div>
 
         <!-- Longest Streak -->

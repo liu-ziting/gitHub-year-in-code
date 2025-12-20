@@ -165,12 +165,12 @@ const startAnalysis = async (username: string) => {
     else if(totalStars > 100) rank = "深空漫步者"
     else if(user.followers > 50) rank = "灵感传道士"
 
-    // Universal Rank 计算
-    let universalRank = "Top 50%"
-    if(totalStars > 1000) universalRank = "Top 1%"
-    else if(totalStars > 500) universalRank = "Top 5%"
-    else if(totalStars > 100) universalRank = "Top 10%"
-    else if(totalStars > 50) universalRank = "Top 25%"
+    // 码龄计算 (Open Source Seniority)
+    const createdDate = new Date(user.created_at)
+    const now = new Date()
+    const diffTime = Math.abs(now.getTime() - createdDate.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    const techImpact = `${diffDays} days`
 
     // Power Level 计算
     let powerLevel = "Rookie"
@@ -185,7 +185,7 @@ const startAnalysis = async (username: string) => {
       totalStars,
       topLang,
       rank,
-      universalRank,
+      techImpact,
       powerLevel,
       totalContributions,
       totalCommits: totalContributions,
