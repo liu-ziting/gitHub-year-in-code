@@ -1,30 +1,33 @@
 # 🌌 GitHub Trace Soul - 2025 年度技术溯源
 
-> **Trace Your Code Soul.** 深度解析 GitHub 仓库与技术栈，接入 Mimo AI 大模型，生成专属开发者的赛博灵魂名片。
+> **Trace Your Code Soul.** 深度解析 GitHub 开发者行为与资产配置，接入 Mimo AI 大模型，生成专属开发者的赛博灵魂名片。
 
 [![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite)](https://vitejs.dev/)
 [![Vue](https://img.shields.io/badge/Vue-3.x-4FC08D?logo=vue.js)](https://vuejs.org/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+[![Chart.js](https://img.shields.io/badge/Charts-Chart.js-FF6384?logo=chart.js)](https://www.chartjs.org/)
 [![AI](https://img.shields.io/badge/AI-Mimo--v2-red?logo=openai)](https://github.com/liu-ziting/)
 
 ---
 
 ## ✨ 项目特性
 
-- 🧬 **技术基因解码**：多维度分析你的 GitHub 仓库，提取核心语言栈、Star 贡献及工程能力画像。
-- 💀 **AI 灵魂锐评**：接入 Mimo AI (Xiaomi Mimo-v2)，生成犀利、幽默且精准的技术点评，直击开发者痛点。
-- 🏷️ **年度热词提取**：基于全量代码贡献建模，生成极具个性的身份标签（如：深夜提交侠、Bug 狩猎者等）。
-- 🖼️ **高保真海报导出**：支持一键生成 2K 高清分享海报，完美还原毛玻璃 (Backdrop-blur) 质感与响应式布局。
-- ⚡ **极致交互体验**：基于 Vue 3 组合式 API + Tailwind CSS，全站毛玻璃 UI 设计，配合 Animate.css 实现丝滑过渡。
+- 🧬 **多维数据建模**：不仅是 Star 统计。通过对仓库元数据、活跃周期、协作频率及关注度分布的深度挖掘，构建完整的开发者数字画像。
+- 📊 **可视化数据引擎**：集成 `Chart.js`，动态渲染技术栈占比环形图与项目影响力阶梯图，让技术沉淀一目了然。
+- 🏆 **2025 年度之最**：自动捕捉年度“明星项目”、“高产仓库”、“协作中心”及“活跃巅峰”，复盘过去一年的高光时刻。
+- 💀 **AI 灵魂锐评**：接入 Mimo AI (Xiaomi Mimo-v2)，针对技术栈偏好生成犀利且幽默的深度点评，挖掘代码背后的“性格基因”。
+- 👑 **全球影响力排名**：基于 Stars 与 Followers 的多权重复合算法，给出更具参考价值的 Universal Rank 全球排名。
+- 🖼️ **高清海报导出**：基于 `html-to-image` 方案，完美还原 Backdrop-blur 毛玻璃质感，一键生成 2K 赛博风格分享海报。
 
 ## 🛠️ 技术架构
 
-- **前端框架**: Vue 3 (Composition API)
+- **核心框架**: Vue 3 (Composition API)
 - **构建工具**: Vite 7
-- **样式处理**: Tailwind CSS (移动端优先响应式设计)
-- **图像生成**: `html-to-image` (现代 SVG 渲染方案，完美支持现代 CSS 特性)
-- **AI 引擎**: 通过 Cloudflare Workers 代理调用的 Mimo AI 模型
-- **动效库**: Animate.css
+- **可视化**: Chart.js (高性能 HTML5 Canvas 图表库)
+- **样式方案**: Tailwind CSS (移动端优先响应式设计)
+- **截图引擎**: `html-to-image` (现代 SVG 渲染方案，完美支持 CSS 高级特性)
+- **AI 代理**: 通过 Cloudflare Workers 代理调用的 Mimo AI API
+- **动画效果**: Animate.css + Tailwind Arbitrary Values
 
 ## 🚀 快速开始
 
@@ -53,31 +56,23 @@ npm run build
 
 ```text
 src/
-├── components/          # 核心组件
-│   ├── LandingPage.vue  # 沉浸式首页
-│   ├── ReportPage.vue   # 溯源报告展示页
-│   ├── Toast.vue        # 统一通知弹窗
-│   └── MarkdownText.vue # AI 内容渲染组件
-├── types/               # TypeScript 类型定义
-├── App.vue              # 主入口逻辑与状态管理
-└── main.ts              # 应用挂载
+├── components/          # 核心 UI 组件
+│   ├── LandingPage.vue  # 沉浸式首页 (Glassmorphism 设计)
+│   ├── ReportPage.vue   # 溯源报告页 (可视化图表 + AI 解析)
+│   ├── AboutPage.vue    # 项目初衷与捐赠说明
+│   ├── Toast.vue        # 统一状态反馈通知
+│   └── MarkdownText.vue # AI 流式内容渲染
+├── types/               # TypeScript 类型定义 (UserData 核心模型)
+├── App.vue              # 核心业务逻辑、API 调度与状态管理
+└── main.ts              # 应用入口
 ```
 
-## 📸 导出说明
+## 📸 技术细节与优化
 
-项目已从 `html2canvas` 迁移至 `html-to-image`，解决了以下长期困扰前端截图的问题：
-- ✅ 完美支持 `backdrop-filter: blur()` 毛玻璃效果。
-- ✅ 完美支持 CSS Grid 栅格与 Gap 间距。
-- ✅ 自动处理跨域图片加载。
-- ✅ 针对移动端导出进行了宽度强制补丁（800px），确保海报排版美观。
-
-## 🤝 贡献指南
-
-1. Fork 本项目
-2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交你的改动 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启一个 Pull Request
+- **毛玻璃适配**：解决了 `html2canvas` 无法渲染 `backdrop-filter` 的痛点，改用 `html-to-image` 确保导出效果与 UI 1:1 还原。
+- **多语言规范**：报告页面采用“一级标题英文 + 二级标题中文”的标准设计规范，平衡科技感与易读性。
+- **性能优化**：对 GitHub API 调用进行了全量异步递归处理，并针对图表实例进行了自动销毁管理，防止内存泄漏。
+- **排名逻辑**：算法公式 `Score = Stars * 1.5 + Followers * 2`，分级更科学，避免了低权重导致的排名虚高。
 
 ---
 
