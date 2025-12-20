@@ -6,7 +6,7 @@
         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
         <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
       </span>
-      2025 年度总结报告器
+      2025 GitHub年度总结生成
     </div>
 
     <!-- 主标题区 -->

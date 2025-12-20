@@ -166,7 +166,7 @@ const startAnalysis = async (username: string) => {
     // 计算额外统计数据
     const totalContributions = Math.floor(300 + Math.random() * 500) // 模拟贡献数
     const longestStreak = Math.floor(5 + Math.random() * 25) // 模拟最长连击
-    const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     const mostActiveMonth = months[Math.floor(Math.random() * 12)]
     const mostActiveDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][Math.floor(Math.random() * 7)]
     
@@ -277,6 +277,7 @@ const callMimoAI = async (type: 'analysis' | 'critique' | 'tags', data: { login:
   } else if (type === 'critique') {
     prompt = `你是 GitHub 灵魂分析官。基于数据：用户名${data.login}, Star总计${data.stars}, 主修语言${data.lang}, 代表作${data.topRepo}。
     请生成一个让他破防的梗，要求极其毒舌但精准（约200字）。
+    避免使用“用户”、“该用户”等客套前缀。
     回复内容直接展示，不需要标题。`
   } else {
     prompt = `你是 GitHub 标签生成器。基于数据：用户名${data.login}, Star总计${data.stars}, 主修语言${data.lang}, 代表作${data.topRepo}。

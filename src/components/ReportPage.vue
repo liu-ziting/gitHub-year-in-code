@@ -145,7 +145,7 @@
             <span class="text-pink-400">📅</span>
             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Most Active Month</p>
           </div>
-          <div class="text-2xl font-black text-pink-400">{{ userData.mostActiveMonth || '1月' }}</div>
+          <div class="text-2xl font-black text-pink-400">{{ userData.mostActiveMonth || 'Jan' }}</div>
         </div>
 
         <!-- Most Active Day -->
