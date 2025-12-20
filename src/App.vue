@@ -144,7 +144,21 @@ const startAnalysis = async (username: string) => {
     const totalStars = repos.reduce((s, r) => s + r.stargazers_count, 0)
     const langMap: Record<string, number> = {}
     repos.forEach(r => r.language && (langMap[r.language] = (langMap[r.language] || 0) + 1))
-    const topLang = Object.keys(langMap).sort((a,b) => (langMap[b] || 0) - (langMap[a] || 0))[0] || 'Unknown'
+    
+    // 技术栈星图数据
+    const languageStats = Object.entries(langMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([label, count]) => ({ label, count }))
+
+    const topLang = languageStats[0]?.label || 'Unknown'
+    
+    // 影响力分布数据 (Top 5 Stars)
+    const starDistribution = [...repos]
+      .sort((a, b) => b.stargazers_count - a.stargazers_count)
+      .slice(0, 5)
+      .map(r => ({ label: r.name, count: r.stargazers_count }))
+
     const starRepo = [...repos].sort((a,b) => b.stargazers_count - a.stargazers_count)[0] || null
     const collaborationRepo = [...repos].sort((a,b) => b.forks_count - a.forks_count)[0] || null
 
@@ -200,6 +214,8 @@ const startAnalysis = async (username: string) => {
       highCommitRepoCount: highCommitCount,
       highContributorRepoName: collaborationRepo?.name || 'N/A',
       highContributorRepoCount: (collaborationRepo?.forks_count || 0) + Math.floor(Math.random() * 10),
+      languageStats,
+      starDistribution,
     }
 
     // 5. 调用 Mimo AI

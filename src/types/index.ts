@@ -37,6 +37,8 @@ export interface UserData extends GitHubUser {
   highCommitRepoCount?: number
   highContributorRepoName?: string
   highContributorRepoCount?: number
+  languageStats?: { label: string; count: number }[]
+  starDistribution?: { label: string; count: number }[]
 }
 
 export interface AIResponse {

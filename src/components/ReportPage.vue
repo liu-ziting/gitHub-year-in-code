@@ -173,8 +173,8 @@
         <div class="flex items-center gap-3 mb-6">
           <span class="text-xl md:text-2xl">🏆</span>
           <div>
-            <h3 class="text-lg md:text-xl font-black text-white uppercase tracking-wider">你的2025编程高光时刻</h3>
-            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em]">Your 2025 GitHub Bests</p>
+            <h3 class="text-lg md:text-xl font-black text-white uppercase tracking-wider">2025 GITHUB BESTS</h3>
+            <p class="text-[9px] md:text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em]">你的 2025 编程高光时刻</p>
           </div>
         </div>
         
@@ -213,6 +213,34 @@
         </div>
       </div>
 
+      <!-- 技术分布与影响力图表 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass p-6 bg-slate-900/30 border border-white/5">
+          <div class="flex flex-col gap-1 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📊</span>
+              <h3 class="text-xs font-black text-white uppercase tracking-wider">TECH STACK</h3>
+            </div>
+            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">技术栈分布 (Top 5)</p>
+          </div>
+          <div class="h-[180px] relative">
+            <canvas id="langChart"></canvas>
+          </div>
+        </div>
+        <div class="glass p-6 bg-slate-900/30 border border-white/5">
+          <div class="flex flex-col gap-1 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">📈</span>
+              <h3 class="text-xs font-black text-white uppercase tracking-wider">INFLUENCE</h3>
+            </div>
+            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">影响力排行 (Stars)</p>
+          </div>
+          <div class="h-[180px] relative">
+            <canvas id="starChart"></canvas>
+          </div>
+        </div>
+      </div>
+
       <!-- 额外统计信息 -->
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div class="glass p-4">
@@ -236,8 +264,8 @@
           <div class="flex items-center gap-2 md:gap-3 mb-4">
             <span class="text-xl md:text-2xl">🧬</span>
             <div>
-              <h3 class="text-lg md:text-xl font-black text-indigo-400 uppercase tracking-wider">技术栈年鉴</h3>
-              <p class="text-[9px] md:text-[10px] text-indigo-400/70 font-bold uppercase tracking-[0.2em]">Tech Stack Yearbook</p>
+              <h3 class="text-lg md:text-xl font-black text-indigo-400 uppercase tracking-wider">TECH STACK YEARBOOK</h3>
+              <p class="text-[9px] md:text-[10px] text-indigo-400/70 font-bold uppercase tracking-[0.2em]">技术栈年鉴</p>
             </div>
             <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse ml-auto"></span>
           </div>
@@ -254,8 +282,8 @@
           <div class="flex items-center gap-2 md:gap-3 mb-4">
             <span class="text-xl md:text-2xl">💀</span>
             <div>
-              <h3 class="text-lg md:text-xl font-black text-red-400 uppercase tracking-wider">锐评报告</h3>
-              <p class="text-[9px] md:text-[10px] text-red-400/70 font-bold uppercase tracking-[0.2em]">Critical Review</p>
+              <h3 class="text-lg md:text-xl font-black text-red-400 uppercase tracking-wider">CRITICAL REVIEW</h3>
+              <p class="text-[9px] md:text-[10px] text-red-400/70 font-bold uppercase tracking-[0.2em]">锐评报告</p>
             </div>
             <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse ml-auto"></span>
           </div>
@@ -272,8 +300,8 @@
           <div class="flex items-center gap-2 md:gap-3 mb-4">
             <span class="text-xl md:text-2xl">🏷️</span>
             <div>
-              <h3 class="text-lg md:text-xl font-black text-teal-400 uppercase tracking-wider">年度热词</h3>
-              <p class="text-[9px] md:text-[10px] text-teal-400/70 font-bold uppercase tracking-[0.2em]">Trending Keywords</p>
+              <h3 class="text-lg md:text-xl font-black text-teal-400 uppercase tracking-wider">TRENDING KEYWORDS</h3>
+              <p class="text-[9px] md:text-[10px] text-teal-400/70 font-bold uppercase tracking-[0.2em]">年度热词</p>
             </div>
             <span class="w-2 h-2 bg-teal-500 rounded-full animate-pulse ml-auto"></span>
           </div>
@@ -306,11 +334,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import Chart from 'chart.js/auto'
 import type { UserData } from '../types'
 import MarkdownText from './MarkdownText.vue'
 
-defineProps<{
+const props = defineProps<{
   userData: Partial<UserData>
   aiContent: { analysis: string; critique: string; tags: string[] }
   isLoading: boolean
@@ -326,6 +355,112 @@ const emit = defineEmits<{
   backToHome: []
   downloadPoster: []
 }>()
+
+// 图表实例引用
+let langChartInstance: Chart | null = null
+let starChartInstance: Chart | null = null
+
+const initCharts = () => {
+  // 销毁旧实例
+  if (langChartInstance) langChartInstance.destroy()
+  if (starChartInstance) starChartInstance.destroy()
+
+  // 语言占比图 (Doughnut)
+  const langCtx = document.getElementById('langChart') as HTMLCanvasElement
+  if (langCtx && props.userData.languageStats) {
+    langChartInstance = new Chart(langCtx, {
+      type: 'doughnut',
+      data: {
+        labels: props.userData.languageStats.map(s => s.label),
+        datasets: [{
+          data: props.userData.languageStats.map(s => s.count),
+          backgroundColor: [
+            'rgba(45, 212, 191, 0.6)',
+            'rgba(139, 92, 246, 0.6)',
+            'rgba(59, 130, 246, 0.6)',
+            'rgba(245, 158, 11, 0.6)',
+            'rgba(236, 72, 153, 0.6)'
+          ],
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              color: 'rgba(255, 255, 255, 0.7)',
+              font: { size: 9, weight: 'bold' },
+              padding: 12,
+              boxWidth: 8,
+              usePointStyle: true
+            }
+          }
+        }
+      }
+    })
+  }
+
+  // 影响力排行图 (Horizontal Bar)
+  const starCtx = document.getElementById('starChart') as HTMLCanvasElement
+  if (starCtx && props.userData.starDistribution) {
+    starChartInstance = new Chart(starCtx, {
+      type: 'bar',
+      data: {
+        labels: props.userData.starDistribution.map(s => s.label.length > 12 ? s.label.substring(0, 10) + '...' : s.label),
+        datasets: [{
+          label: 'Stars',
+          data: props.userData.starDistribution.map(s => s.count),
+          backgroundColor: 'rgba(139, 92, 246, 0.4)',
+          borderColor: 'rgba(139, 92, 246, 0.8)',
+          borderWidth: 1,
+          borderRadius: 4,
+          barThickness: 12
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: 'rgba(255, 255, 255, 0.4)', font: { size: 8 } }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { 
+              color: 'rgba(255, 255, 255, 0.8)', 
+              font: { size: 9, weight: 'bold' },
+              padding: 8
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    })
+  }
+}
+
+onMounted(() => {
+  if (props.userData.languageStats) {
+    initCharts()
+  }
+})
+
+// 监听数据变化重新渲染
+watch(() => props.userData, (newVal) => {
+  if (newVal.languageStats) {
+    // 延迟确保 DOM 已更新
+    setTimeout(initCharts, 200)
+  }
+}, { deep: true })
 
 const handleDownload = async () => {
   isDownloading.value = true
