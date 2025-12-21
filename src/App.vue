@@ -26,8 +26,10 @@
 
       <footer class="text-center pt-12 text-slate-500 text-xs space-y-2">
         <p>© GitHub 2025 Year in Code. Built with ❤️ for Developers.</p>
-        <p class="opacity-50 font-mono tracking-wider">
-          Powered by <span class="text-teal-400/80">Gemini-3-Flash</span> • <span class="text-purple-400/80">VibeCoding</span> Edition
+        <p class="opacity-50 font-mono tracking-wider flex items-center justify-center gap-2">
+          <span>Powered by <span class="text-teal-400/80">Gemini-3-Flash</span></span>
+          <span class="w-1 h-1 bg-slate-700 rounded-full"></span>
+          <a href="https://github2025.lz-t.top/" class="hover:text-teal-400 transition-colors">github2025.lz-t.top</a>
         </p>
       </footer>
     </div>
