@@ -278,7 +278,7 @@
         </div>
 
         <!-- 锐评报告 -->
-        <div class="glass p-4 md:p-6 border-l-4 border-l-red-500">
+        <div v-if="showCritique" class="glass p-4 md:p-6 border-l-4 border-l-red-500 relative group/critique">
           <div class="flex items-center gap-2 md:gap-3 mb-4">
             <span class="text-xl md:text-2xl">💀</span>
             <div>
@@ -286,6 +286,18 @@
               <p class="text-[9px] md:text-[10px] text-red-400/70 font-bold uppercase tracking-[0.2em]">锐评报告</p>
             </div>
             <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse ml-auto"></span>
+            
+            <!-- 隐藏按钮 - 仅在非下载模式下显示 -->
+            <button 
+              v-if="!isDownloading"
+              @click="showCritique = false"
+              class="ml-2 p-1 hover:bg-white/10 rounded transition-colors opacity-0 group-hover/critique:opacity-100 text-gray-500 hover:text-red-400"
+              title="隐藏此栏"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+              </svg>
+            </button>
           </div>
           
           <div class="text-sm md:text-base leading-relaxed text-gray-200 min-h-[60px] bg-slate-900/30 rounded-2xl p-4 md:p-6 border border-red-500/20 shadow-inner">
@@ -293,6 +305,20 @@
               <MarkdownText :text="aiContent.critique || 'AI 正在蓄力攻击...'" />
             </div>
           </div>
+        </div>
+
+        <!-- 恢复锐评按钮 - 仅在非下载模式下且已隐藏时显示 -->
+        <div v-if="!showCritique && !isDownloading" class="flex justify-center">
+          <button 
+            @click="showCritique = true"
+            class="text-[10px] text-gray-500 hover:text-red-400 transition-colors uppercase tracking-widest font-bold flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10"
+          >
+            <span>显示锐评报告</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </button>
         </div>
 
         <!-- 年度热词 -->
@@ -327,7 +353,7 @@
           <p class="text-[8px] font-mono tracking-widest uppercase text-center md:text-left">Power by Xiaomi Mimo-v2 & GitHub Trace Engine</p>
           <div class="flex items-center gap-2">
             <p class="text-[8px] font-mono tracking-widest uppercase">Build yours at:</p>
-            <a href="https://github2025.lz-t.top/" target="_blank" class="text-[10px] font-bold font-mono tracking-widest hover:text-white transition-colors border-b border-white/20">https://github2025.lz-t.top/</a>
+            <a href="https://github2025.lz-t.top/" target="_blank" class="text-[10px] font-bold font-mono tracking-widest hover:text-white transition-colors border-b border-white/20">https://github2025.lz-t.top</a>
           </div>
         </div>
         <div class="flex items-center gap-3">
@@ -359,6 +385,7 @@ const avatarError = ref(false)
 const chartLoaded = ref(false)
 const chartError = ref(false)
 const isDownloading = ref(false)
+const showCritique = ref(true)
 
 const emit = defineEmits<{
   backToHome: []
