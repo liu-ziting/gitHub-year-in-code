@@ -117,11 +117,13 @@ const startAnalysis = async (username: string) => {
         }
 
         // 3. 数据处理
-        const repos2025 = repos.filter(r => new Date(r.updated_at).getFullYear() === 2025)
+        // 过滤掉 fork 的项目，只统计用户原创项目
+        const originalRepos = repos.filter(r => !r.fork)
+        const repos2025 = originalRepos.filter(r => new Date(r.updated_at).getFullYear() === 2025)
 
-        const totalStars = repos.reduce((s, r) => s + r.stargazers_count, 0)
+        const totalStars = originalRepos.reduce((s, r) => s + r.stargazers_count, 0)
         const langMap: Record<string, number> = {}
-        repos.forEach(r => r.language && (langMap[r.language] = (langMap[r.language] || 0) + 1))
+        originalRepos.forEach(r => r.language && (langMap[r.language] = (langMap[r.language] || 0) + 1))
 
         // 技术栈星图数据
         const languageStats = Object.entries(langMap)
@@ -132,7 +134,7 @@ const startAnalysis = async (username: string) => {
         const topLang = languageStats[0]?.label || 'Unknown'
 
         // 影响力分布数据 (Top 5 Stars)
-        const starDistribution = [...repos]
+        const starDistribution = [...originalRepos]
             .sort((a, b) => b.stargazers_count - a.stargazers_count)
             .slice(0, 5)
             .map(r => ({ label: r.name, count: r.stargazers_count }))
@@ -182,6 +184,7 @@ const startAnalysis = async (username: string) => {
         // 设置用户数据
         userData.value = {
             ...user,
+            public_repos: originalRepos.length,
             totalStars,
             topLang,
             rank,
