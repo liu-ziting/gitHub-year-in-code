@@ -114,7 +114,7 @@
                 </div>
                 <h3 class="text-white font-black text-lg mb-3 tracking-tight">年度热词</h3>
                 <p class="text-sm text-gray-500 leading-relaxed">
-                    基于全量仓库数据建模，提取极具幽默感的身份标签，<br />
+                    基于 2025 年度数据建模，提取极具幽默感的身份标签，<br />
                     一键生成高保真数字名片与社交海报。
                 </p>
             </div>
