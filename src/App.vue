@@ -208,25 +208,24 @@ const startAnalysis = async (username: string) => {
         }
 
         // 5. 调用 Mimo AI
+        const aiInputData = {
+            login: user.login,
+            stars: totalStars,
+            lang: topLang,
+            topRepo: starRepo ? starRepo.name : 'N/A',
+            totalContributions,
+            longestStreak,
+            mostActiveMonth,
+            mostActiveDay,
+            publicRepos: originalRepos.length,
+            followers: user.followers,
+            topLangs: languageStats.map(l => l.label)
+        }
+
         const [analysis, critique, tagsStr] = await Promise.all([
-            callMimoAI('analysis', {
-                login: user.login,
-                stars: totalStars,
-                lang: topLang,
-                topRepo: starRepo ? starRepo.name : 'N/A'
-            }),
-            callMimoAI('critique', {
-                login: user.login,
-                stars: totalStars,
-                lang: topLang,
-                topRepo: starRepo ? starRepo.name : 'N/A'
-            }),
-            callMimoAI('tags', {
-                login: user.login,
-                stars: totalStars,
-                lang: topLang,
-                topRepo: starRepo ? starRepo.name : 'N/A'
-            })
+            callMimoAI('analysis', aiInputData),
+            callMimoAI('critique', aiInputData),
+            callMimoAI('tags', aiInputData)
         ])
 
         const tags = tagsStr
