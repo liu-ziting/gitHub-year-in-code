@@ -185,7 +185,7 @@ const startAnalysis = async (username: string) => {
                     monthContributions[m] = (monthContributions[m] || 0) + c.count
                 })
                 const topMonth = Object.entries(monthContributions).sort((a, b) => b[1] - a[1])[0]
-                if (topMonth) mostActiveMonth = months[Number(topMonth[0])]
+                if (topMonth) mostActiveMonth = months[Number(topMonth[0])] || 'Jan'
 
                 // 计算最活跃的一天
                 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
